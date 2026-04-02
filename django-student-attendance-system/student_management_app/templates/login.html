@@ -1,0 +1,107 @@
+{% extends 'base.html' %}
+{% load static %} 
+
+{% block content %}
+
+<style>
+    html, body {
+        height: 100%;
+        width: 100%;
+        margin: 0;
+        padding: 0;
+    }
+    
+    body.hold-transition.login-page {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        min-height: 100vh;
+        padding: 20px;
+        background-color: #f4f4f4;
+    }
+    
+    .login-box {
+        width: 100%;
+        max-width: 450px;
+        margin: auto;
+    }
+</style>
+
+    <body class="hold-transition login-page">
+<div class="login-box">
+  <div class="login-logo">
+    <div class="text-center mb-4">
+      <img src="{% static 'images/logo.jfif' %}" class="img-fluid" alt="Catholicate College Logo" style="max-width: 120px; height: auto;">
+    </div>
+    <h3 class="text-center"><b>Catholicate College</b></h3>
+    <p class="text-center text-muted">Student Attendance Management System</p>
+  </div>
+  <!-- /.login-logo -->
+  <div class="card shadow-lg">
+    <div class="card-header bg-primary text-white text-center">
+      <h4 class="mb-0"><i class="fas fa-sign-in-alt mr-2"></i>Secure Login</h4>
+    </div>
+    <div class="card-body login-card-body">
+      <p class="login-box-msg text-center font-weight-bold">Please sign in to access your account</p>
+
+      <form action="{% url 'doLogin' %}" method="POST">
+      {% csrf_token %}
+        <div class="input-group mb-3">
+          <input type="email" class="form-control form-control-lg" placeholder="Enter your email address" name="email" required>
+          <div class="input-group-append">
+            <div class="input-group-text">
+              <span class="fas fa-envelope"></span>
+            </div>
+          </div>
+        </div>
+        <div class="input-group mb-3">
+          <input type="password" class="form-control form-control-lg" placeholder="Enter your password" name="password" required>
+          <div class="input-group-append">
+            <div class="input-group-text">
+              <span class="fas fa-lock"></span>
+            </div>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col-12">
+            <button type="submit" class="btn btn-primary btn-block btn-lg"><i class="fas fa-sign-in-alt mr-2"></i>Sign In</button>
+          </div>
+        </div>
+
+        {% comment %} Display Messages {% endcomment %}
+        {% if messages %}
+        <div class="col-12 mt-3">
+          {% for message in messages %}
+            {% if message.tags == "error" %}
+              <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                <i class="fas fa-exclamation-triangle mr-2"></i>{{ message }}
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+                </button>
+              </div>
+            {% endif %}
+          {% endfor %}
+        </div>
+        {% endif %}
+
+      </form>
+
+      <div class="text-center mt-3">
+        <small class="text-muted">Forgot your password? Contact system administrator.</small>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="text-center mt-4">
+  <footer class="text-muted">
+    <strong>&copy; {% now "Y" %} Catholicate College. All rights reserved.</strong><br>
+    <small>Developed for efficient student management</small>
+  </footer>
+</div>
+
+<!-- /.login-box -->
+
+{% endblock %}

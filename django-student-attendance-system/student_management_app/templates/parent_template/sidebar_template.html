@@ -1,0 +1,103 @@
+{% load static %}
+
+<aside class="main-sidebar sidebar-dark-primary elevation-4">
+      <!-- Brand Logo -->
+      <a href="{% url 'parent_home' %}" class="brand-link">
+        <img src="{% static 'dist/img/AdminLTELogo.png' %}" alt="AdminLTE Logo" class="brand-image img-circle elevation-3"
+            style="opacity: .8">
+        <span class="brand-text font-weight-light">Catholicate College</span>
+      </a>
+
+      <!-- Sidebar -->
+      <div class="sidebar">
+        <!-- Sidebar user panel (optional) -->
+        <div class="user-panel mt-3 pb-3 mb-3 d-flex">
+          <div class="image">
+            <i class="fas fa-user-circle img-circle elevation-2" style="font-size: 2.1rem; color: white;"></i>
+          </div>
+          <div class="info">
+            <a href="#" class="d-block">{{ user.first_name }} {{ user.last_name }}</a>
+          </div>
+        </div>
+
+        <!-- Sidebar Menu -->
+        <nav class="mt-2">
+          <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
+            <!-- Add icons to the links using the .nav-icon class
+                with font-awesome or any other icon font library -->
+            
+            <li class="nav-item">
+              {% url 'parent_home' as parent_home %}
+              <a href="{{ parent_home }}" class="nav-link {% if request.path == parent_home %} active {% endif %}">
+                <i class="nav-icon fas fa-tachometer-alt"></i>
+                <p>
+                  Home
+                  {% comment %} <span class="right badge badge-danger">New</span> {% endcomment %}
+                </p>
+              </a>
+            </li>
+
+            <li class="nav-item">
+              {% url 'parent_student_profile' as parent_student_profile %}
+              <a href="{{ parent_student_profile }}" class="nav-link {% if request.path == parent_student_profile %} active {% endif %}">
+                <i class="nav-icon fas fa-user"></i>
+                <p>
+                  Student Profile
+                  {% comment %} <span class="right badge badge-danger">New</span> {% endcomment %}
+                </p>
+              </a>
+            </li>
+
+            <li class="nav-item">
+              {% url 'parent_view_results' as parent_view_results %}
+              <a href="{{ parent_view_results }}" class="nav-link {% if request.path == parent_view_results %} active {% endif %}">
+                <i class="nav-icon fas fa-graduation-cap"></i>
+                <p>
+                  View Results
+                  {% if new_results_count > 0 %}<span class="right badge badge-warning">{{ new_results_count }}</span>{% endif %}
+                </p>
+              </a>
+            </li>
+
+            <li class="nav-item">
+              {% url 'parent_view_attendance' as parent_view_attendance %}
+              <a href="{{ parent_view_attendance }}" class="nav-link {% if request.path == parent_view_attendance %} active {% endif %}">
+                <i class="nav-icon fas fa-calendar-alt"></i>
+                <p>
+                  View Attendance
+                  {% if new_attendance_count > 0 %}<span class="right badge badge-info">{{ new_attendance_count }}</span>{% endif %}
+                </p>
+              </a>
+            </li>
+
+            <li class="nav-item has-treeview">
+              {% url 'parent_feedback' as parent_feedback %}
+              <a href="#" class="nav-link {% if request.path == parent_feedback %} active {% endif %}">
+                <i class="nav-icon fas fa-comments"></i>
+                <p>
+                  Feedback/Comments
+                  <i class="right fas fa-angle-left"></i>
+                </p>
+              </a>
+              <ul class="nav nav-treeview">
+                <li class="nav-item">
+                  <a href="{% url 'parent_feedback' %}?type=admin" class="nav-link">
+                    <i class="far fa-circle nav-icon"></i>
+                    <p>To Admin</p>
+                  </a>
+                </li>
+                <li class="nav-item">
+                  <a href="{% url 'parent_feedback' %}?type=staff" class="nav-link">
+                    <i class="far fa-circle nav-icon"></i>
+                    <p>To Staff</p>
+                  </a>
+                </li>
+              </ul>
+            </li>
+
+          </ul>
+        </nav>
+        <!-- /.sidebar-menu -->
+      </div>
+      <!-- /.sidebar -->
+    </aside>

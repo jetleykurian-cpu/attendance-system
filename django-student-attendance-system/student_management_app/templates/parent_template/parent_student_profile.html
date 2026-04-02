@@ -1,0 +1,50 @@
+{% extends 'parent_template/base_template.html' %}
+
+{% block page_title %}
+    Student Profile
+{% endblock page_title %}
+
+{% block main_content %}
+
+{% load static %}
+
+<section class="content">
+    <div class="container-fluid">
+
+        <div class="row">
+            <div class="col-md-12">
+                <!-- general form elements -->
+                <div class="card card-primary">
+                <div class="card-header">
+                    <h3 class="card-title">Student Details</h3>
+                </div>
+                <!-- /.card-header -->
+
+                    <div class="card-body">
+                        <div class="form-group">
+                            <label>Student Name: </label> {{ student.admin.first_name }} {{ student.admin.last_name }}
+                        </div>
+                        <div class="form-group">
+                            <label>Course: </label> {{ student.course_id.course_name }}
+                        </div>
+                        <div class="form-group">
+                            <label>Session: </label> {{ student.session_year_id.session_start_year }} to {{ student.session_year_id.session_end_year }}
+                        </div>
+                        <div class="form-group">
+                            <label>Gender: </label> {{ student.gender }}
+                        </div>
+                        <div class="form-group">
+                            <label>Address: </label> {{ student.address }}
+                        </div>
+                    </div>
+
+                </div>
+                <!-- /.card -->
+
+            </div>
+        </div>
+
+    </div><!-- /.container-fluid -->
+</section>
+
+{% endblock main_content %}

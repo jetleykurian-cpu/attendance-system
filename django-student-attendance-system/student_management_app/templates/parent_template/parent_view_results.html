@@ -1,0 +1,58 @@
+{% extends 'parent_template/base_template.html' %}
+
+{% block page_title %}
+    View Results
+{% endblock page_title %}
+
+{% block main_content %}
+
+{% load static %}
+
+<section class="content">
+    <div class="container-fluid">
+
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card card-primary">
+                <div class="card-header">
+                    <h3 class="card-title">Results</h3>
+                </div>
+                <!-- /.card-header -->
+
+                    <div class="card-body">
+                        <table class="table table-bordered">
+                            <thead>
+                                <tr>
+                                    <th>Subject</th>
+                                    <th>Assignment Marks</th>
+                                    <th>Exam Marks</th>
+                                    <th>Total</th>
+                                    <th>Grade</th>
+                                    <th>Remarks</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for result in results %}
+                                <tr>
+                                    <td>{{ result.subject_id.subject_name }}</td>
+                                    <td>{{ result.assignment_marks }}/{{ result.assignment_out_of }}</td>
+                                    <td>{{ result.exam_marks }}/{{ result.exam_out_of }}</td>
+                                    <td>{{ result.total_marks }}/{{ result.total_out_of }}</td>
+                                    <td>{{ result.grade }}</td>
+                                    <td>{{ result.remarks|default:"-" }}</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+
+                </div>
+                <!-- /.card -->
+
+            </div>
+        </div>
+
+    </div><!-- /.container-fluid -->
+</section>
+
+{% endblock main_content %}

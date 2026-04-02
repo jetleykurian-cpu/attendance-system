@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+{% block content %}
+
+<h3>Monthly Attendance Report</h3>
+
+<ul class="list-group">
+  <li class="list-group-item">Total Classes: {{ total }}</li>
+  <li class="list-group-item">Classes Attended: {{ present }}</li>
+  <li class="list-group-item">
+    Attendance Percentage:
+    <strong>{{ percentage }}%</strong>
+  </li>
+</ul>
+
+<div class="progress mt-3">
+  <div class="progress-bar" role="progressbar"
+         style="width: {{ percentage }}%;">
+    {{ percentage }}%
+  </div>
+</div>
+
+{% endblock %}

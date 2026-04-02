@@ -1,0 +1,100 @@
+{% extends 'parent_template/base_template.html' %}
+
+{% block page_title %}
+    Child Performance
+{% endblock page_title %}
+
+{% block main_content %}
+
+{% load static %}
+
+<section class="content">
+        <div class="container-fluid">
+
+            <div class="row">
+                <div class="col-md-12">
+                    <!-- general form elements -->
+                    <div class="card card-primary">
+                    <div class="card-header">
+                        <h3 class="card-title">Student Performance Graph</h3>
+                    </div>
+                    <!-- /.card-header -->
+
+                        <div class="card-body">
+                            <canvas id="performanceChart" width="400" height="200"></canvas>
+                        </div>
+
+                    </div>
+                    <!-- /.card -->
+
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="card card-primary">
+                    <div class="card-header">
+                        <h3 class="card-title">Detailed Results</h3>
+                    </div>
+                    <!-- /.card-header -->
+
+                        <div class="card-body">
+                            <table class="table table-bordered">
+                                <thead>
+                                    <tr>
+                                        <th>Subject</th>
+                                        <th>Assignment Marks</th>
+                                        <th>Exam Marks</th>
+                                        <th>Total</th>
+                                        <th>Grade</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for result in results %}
+                                    <tr>
+                                        <td>{{ result.subject_id.subject_name }}</td>
+                                        <td>{{ result.assignment_marks }}</td>
+                                        <td>{{ result.exam_marks }}</td>
+                                        <td>{{ result.assignment_marks|add:result.exam_marks }}</td>
+                                        <td>{{ result.get_grade }}</td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+
+                    </div>
+                    <!-- /.card -->
+
+                </div>
+            </div>
+
+        </div><!-- /.container-fluid -->
+      </section>
+
+      <script src="{% static 'chart.js/Chart.min.js' %}"></script>
+      <script>
+        var ctx = document.getElementById('performanceChart').getContext('2d');
+        var performanceChart = new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: {{ subject_names_json|safe }},
+                datasets: [{
+                    label: 'Total Marks',
+                    data: {{ total_marks_json|safe }},
+                    backgroundColor: 'rgba(54, 162, 235, 0.2)',
+                    borderColor: 'rgba(54, 162, 235, 1)',
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+      </script>
+
+  {% endblock main_content %}

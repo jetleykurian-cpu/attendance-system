@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+{% block content %}
+
+<h2>Parent Dashboard</h2>
+
+<p><strong>Student:</strong> {{ student.admin.username }}</p>
+
+<h4>Attendance Summary</h4>
+<p>Total Present Days: {{ attendance_count }}</p>
+
+<h4>Academic Results</h4>
+<table class="table table-bordered">
+    <tr>
+        <th>Subject</th>
+        <th>Exam</th>
+        <th>Assignment</th>
+        <th>Total</th>
+        <th>Grade</th>
+    </tr>
+    {% for r in results %}
+    <tr>
+        <td>{{ r.subject_id.subject_name }}</td>
+        <td>{{ r.exam_marks }}</td>
+        <td>{{ r.assignment_marks }}</td>
+        <td>{{ r.total_marks }}</td>
+        <td>{{ r.grade }}</td>
+    </tr>
+    {% endfor %}
+</table>
+
+{% endblock %}

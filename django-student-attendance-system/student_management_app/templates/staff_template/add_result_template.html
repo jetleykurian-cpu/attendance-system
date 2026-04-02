@@ -1,0 +1,254 @@
+{% extends 'staff_template/base_template.html' %}
+
+{% block page_title %}
+Add Result
+{% endblock page_title %}
+
+{% block main_content %}
+{% load static %}
+
+<section class="content">
+<div class="container-fluid">
+<div class="row">
+<div class="col-md-12">
+
+<form method="POST" action="{% url 'staff_add_result_save' %}">
+{% csrf_token %}
+
+<div class="card card-primary">
+
+<div class="card-header">
+<h3 class="card-title">Add Result</h3>
+</div>
+
+{% if messages %}
+<div class="p-3">
+{% for message in messages %}
+<div class="alert alert-{{ message.tags }}">{{ message }}</div>
+{% endfor %}
+</div>
+{% endif %}
+
+<div class="card-body">
+
+<!-- SUBJECT -->
+<div class="form-group">
+<label>Subject</label>
+<select class="form-control" id="subject" name="subject">
+<option value="">Select Subject</option>
+{% for subject in subjects %}
+<option value="{{ subject.id }}" {% if initial.subject_id == subject.id %}selected{% endif %}>{{ subject.subject_name }}</option>
+{% endfor %}
+</select>
+</div>
+
+<!-- SESSION YEAR -->
+<div class="form-group">
+<label>Session Year</label>
+<select class="form-control" id="session_year" name="session_year">
+<option value="">Select Session</option>
+{% for session_year in session_years %}
+<option value="{{ session_year.id }}">
+{{ session_year.session_start_year }} to {{ session_year.session_end_year }}
+</option>
+{% endfor %}
+</select>
+</div>
+
+</div>
+
+<div class="card-footer">
+<button type="button" class="btn btn-primary" id="fetch_student">
+Fetch Student
+</button>
+</div>
+
+<!-- STUDENT DATA -->
+<div class="card-body" id="student_data" style="display: none;">
+
+<div class="form-group">
+<label>Student</label>
+<select class="form-control" id="student_list" name="student_list">
+<option value="">Select Student</option>
+</select>
+</div>
+
+<div class="form-group">
+<label>Assignment Marks</label>
+<input type="number" class="form-control" name="assignment_marks" required>
+</div>
+
+<div class="form-group">
+<label>Assignment Out Of</label>
+<input type="number" class="form-control" name="assignment_out_of" value="50" required>
+</div>
+
+<div class="form-group">
+<label>Exam Marks</label>
+<input type="number" class="form-control" name="exam_marks" required>
+</div>
+
+<div class="form-group">
+<label>Exam Out Of</label>
+<input type="number" class="form-control" name="exam_out_of" value="50" required>
+</div>
+
+<div class="form-group">
+<label>Remarks</label>
+<textarea class="form-control" name="remarks" rows="2" placeholder="Optional remarks"></textarea>
+</div>
+
+<button type="submit" class="btn btn-success">
+Save Result
+</button>
+
+</div>
+
+</div>
+</form>
+
+<div class="row mt-4">
+    <div class="col-md-12">
+        <div class="card card-secondary">
+            <div class="card-header">
+                <h3 class="card-title">Saved Results</h3>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-bordered">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Student</th>
+                                <th>Subject</th>
+                                <th>Marks</th>
+                                <th>Grade</th>
+                                <th>Remarks</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for r in results %}
+                            <tr>
+                                <td>{{ r.id }}</td>
+                                <td>{{ r.student_id.admin.first_name }} {{ r.student_id.admin.last_name }}</td>
+                                <td>{{ r.subject_id.subject_name }}</td>
+                                <td>{{ r.total_marks }}/{{ r.total_out_of }}</td>
+                                <td>{{ r.grade }}</td>
+                                <td>{{ r.remarks|default:"-" }}</td>
+                                <td>
+                                    <a href="?result_id={{ r.id }}" class="btn btn-sm btn-info">Edit</a>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+</div>
+</div>
+</div>
+</section>
+
+{% endblock main_content %}
+
+{% block custom_js %}
+<script>
+$(function(){
+
+    // Get CSRF token from cookie (recommended for AJAX POST)
+    function getCookie(name) {
+        var cookieValue = null;
+        if (document.cookie && document.cookie !== '') {
+            var cookies = document.cookie.split(';');
+            for (var i = 0; i < cookies.length; i++) {
+                var cookie = cookies[i].trim();
+                if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+            }
+        }
+        return cookieValue;
+    }
+
+    var csrftoken = getCookie('csrftoken');
+    var initialSubject = {{ initial.subject_id|default:"null" }};
+    var initialStudent = {{ initial.student_id|default:"null" }};
+
+    $.ajaxSetup({
+        beforeSend: function(xhr, settings) {
+            if (!/^(GET|HEAD|OPTIONS|TRACE)$/i.test(settings.type)) {
+                xhr.setRequestHeader('X-CSRFToken', csrftoken);
+            }
+        }
+    });
+
+    // If we came in with a result selected, prefill and auto-fetch students
+    if (initialSubject) {
+        $('#subject').val(initialSubject);
+    }
+    if (initialStudent) {
+        $('#fetch_student').trigger('click');
+    }
+
+    $(document).on('click', '#fetch_student', function(e){
+        e.preventDefault();
+
+        var subject = $.trim($('#subject').val() || '');
+        var session_year = $.trim($('#session_year').val() || '');
+
+        if(!subject || !session_year){
+            alert('Select Subject and Session Year');
+            return;
+        }
+
+        $.ajax({
+            url: "{% url 'get_students' %}",
+            method: 'POST',
+            dataType: 'json',
+            data: {
+                subject: subject,
+                session_year: session_year
+            }
+        }).done(function(response){
+            console.log('STUDENT RESPONSE =', response);
+
+            if (response.error) {
+                alert('Error: ' + response.error);
+                return;
+            }
+
+            var students = [];
+            if (Array.isArray(response)) {
+                students = response;
+            } else if (response.students && Array.isArray(response.students)) {
+                students = response.students;
+            }
+
+            var html = "<option value=''>Select Student</option>";
+            for(var i=0;i<students.length;i++){
+                html += "<option value='"+students[i].id+"'>" + students[i].name + "</option>";
+            }
+
+            $('#student_list').html(html);
+            $('#student_data').show();
+
+            // If we're editing a result, select that student
+            var initialStudent = {{ initial.student_id|default:'null' }};
+            if (initialStudent) {
+                $('#student_list').val(initialStudent);
+            }
+        }).fail(function(xhr, status, err){
+            console.error('Error fetching students:', status, err, xhr.responseText);
+            alert('Error fetching students: ' + xhr.status + ' - ' + xhr.responseText);
+        });
+    });
+
+});
+</script>
+{% endblock custom_js %}
