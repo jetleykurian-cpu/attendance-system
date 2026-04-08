@@ -1,4 +1,4 @@
-from django.contrib.auth.models import User
+from student_management_app.models import CustomUser
 from django.core.management.base import BaseCommand
 
 class Command(BaseCommand):
@@ -14,8 +14,8 @@ class Command(BaseCommand):
         email = options['email']
         password = options['password']
 
-        if not User.objects.filter(username='admin').exists():
-            User.objects.create_superuser(username='admin', email='admin@example.com', password='admin123')
+        if not CustomUser.objects.filter(username='admin').exists():
+            CustomUser.objects.create_superuser(username='admin', email='admin@example.com', password='admin123')
             self.stdout.write(self.style.SUCCESS('Superuser created successfully'))
         else:
             self.stdout.write(self.style.WARNING('Superuser already exists'))
